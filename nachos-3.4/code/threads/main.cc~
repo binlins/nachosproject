@@ -52,7 +52,7 @@
 #define MAIN
 #include "copyright.h"
 #undef MAIN
-extern int progressnum[128]={0};//linbin add
+
 #include "utility.h"
 #include "system.h"
 
@@ -60,7 +60,7 @@ extern int progressnum[128]={0};//linbin add
 extern int testnum;
 
 #endif
-
+extern int progressnum[128];//linbin add
 // External functions used by this file
 
 extern void ThreadTest(void), Copy(char *unixFile, char *nachosFile);
@@ -84,7 +84,7 @@ extern void mytest1(void);
 //	"argv" is an array of strings, one for each command line argument
 //		ex: "nachos -d +" -> argv = {"nachos", "-d", "+"}
 //----------------------------------------------------------------------
-//int progressnum[128] = {0};
+//
 int
 main(int argc, char **argv)
 {
@@ -107,7 +107,7 @@ main(int argc, char **argv)
         break;
       }
     }
-
+	testnum = 2;
     ThreadTest();
 	mytest1();
 #endif

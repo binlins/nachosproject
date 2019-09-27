@@ -87,7 +87,7 @@ Thread::getprogressid()
 Thread::~Thread()
 {
     DEBUG('t', "Deleting thread \"%s\"\n", name);
-	scheduler->FinishInAllList(this);
+	
 	//sysDeGetProgressid(progressid);
     ASSERT(this != currentThread);
     if (stack != NULL)

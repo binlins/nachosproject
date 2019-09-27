@@ -178,7 +178,7 @@ Thread::Finish ()
     ASSERT(this == currentThread);
     
     DEBUG('t', "Finishing thread \"%s\"\n", getName());
-    scheduler->FinishInAllList(this);
+    //scheduler->FinishInAllList(this);
     threadToBeDestroyed = currentThread;
     Sleep();					// invokes SWITCH
     // not reached
