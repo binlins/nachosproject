@@ -12,7 +12,7 @@
 //	infinite loop.
 //
 // 	Very simple implementation -- no priorities, straight FIFO.
-//	Might need to be improved in later assignments.
+//	Might need to be improved in later assignments.f
 //
 // Copyright (c) 1992-1993 The Regents of the University of California.
 // All rights reserved.  See copyright.h for copyright notice and limitation 
@@ -27,10 +27,43 @@
 // 	Initialize the list of ready but not running threads to empty.
 //----------------------------------------------------------------------
 
+AllScheduler::AllScheduler()
+{
+	allList = new List;
+}
+AllScheduler::~AllScheduler()
+{ 
+	delete allList;
+} 
+void
+AllScheduler::FinishInAllList (Thread *finishThread)
+{
+    allList->Remove((void *)finishThread);
+}
+void
+AllScheduler::StartInAllList (Thread *thread)
+{
+	allList->Append((void *)thread);
+}
+void
+AllScheduler::Print()
+{
+	printf("new All list contents:\n");
+	printf("name                uid         pid        status\n");
+    allList->Mapcar((VoidFunctionPtr) ThreadPrint);
+	printf("--------------------------------------------------\n");
+	
+}
+//以上是我的复刻------------------------------------------
+//----------------------------------------------------------------------
+//----------------------------------------------------------------------
+//----------------------------------------------------------------------
+//----------------------------------------------------------------------
+//----------------------------------------------------------------------
+//----------------------------------------------------------------------
 Scheduler::Scheduler()
 { 
     readyList = new List; 
-	allList = new List;
 } 
 
 //----------------------------------------------------------------------
@@ -41,7 +74,6 @@ Scheduler::Scheduler()
 Scheduler::~Scheduler()
 { 
     delete readyList; 
-	delete allList;
 } 
 
 //----------------------------------------------------------------------
@@ -59,10 +91,6 @@ Scheduler::ReadyToRun (Thread *thread)
 
     thread->setStatus(READY);
     readyList->Append((void *)thread);
-	if (!allList->IsInList((void *)thread)) {
-		allList->Append((void *)thread);////////不在的加上去，但是本不该在这加
-	}
-	
 }
 
 //----------------------------------------------------------------------
@@ -77,12 +105,6 @@ Thread *
 Scheduler::FindNextToRun ()
 {
     return (Thread *)readyList->Remove();
-}
-void
-Scheduler::FinishInAllList (Thread *finishThread)
-{
-	
-    allList->Remove(finishThread);
 }
 
 //----------------------------------------------------------------------
@@ -154,9 +176,11 @@ Scheduler::Run (Thread *nextThread)
 void
 Scheduler::Print()
 {
-    //printf("Ready list contents:\n");
-    //readyList->Mapcar((VoidFunctionPtr) ThreadPrint);
-	printf("All list contents:\n");
-    allList->Mapcar((VoidFunctionPtr) ThreadPrint);
+  	printf("Ready list contents:\n");
+    readyList->Mapcar((VoidFunctionPtr) ThreadPrint);
+	//printf("All list contents:\n");
+	//printf("name                uid         pid        status\n");
+    //allList->Mapcar((VoidFunctionPtr) ThreadPrint);
+	//printf("--------------------------------------------------\n");
 	
 }

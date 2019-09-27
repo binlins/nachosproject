@@ -25,9 +25,12 @@ extern void Cleanup();				// Cleanup, called when
 extern Thread *currentThread;			// the thread holding the CPU
 extern Thread *threadToBeDestroyed;  		// the thread that just finished
 extern Scheduler *scheduler;			// the ready list
+extern AllScheduler *allScheduler; //linbin add
 extern Interrupt *interrupt;			// interrupt status
 extern Statistics *stats;			// performance metrics
 extern Timer *timer;				// the hardware alarm clock
+
+
 
 #ifdef USER_PROGRAM
 #include "machine.h"

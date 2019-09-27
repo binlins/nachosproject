@@ -60,6 +60,7 @@ Thread::Thread(char* threadName)
 #ifdef USER_PROGRAM
     space = NULL;
 #endif
+	allScheduler->StartInAllList(this);
 }
 
 //
@@ -67,7 +68,6 @@ Thread::Thread(char* threadName)
 int
 Thread::getprogressid()
 {
-	
 	return progressid;
 }
 
@@ -178,7 +178,7 @@ Thread::Finish ()
     ASSERT(this == currentThread);
     
     DEBUG('t', "Finishing thread \"%s\"\n", getName());
-    //scheduler->FinishInAllList(this);
+    allScheduler->FinishInAllList(this);
     threadToBeDestroyed = currentThread;
     Sleep();					// invokes SWITCH
     // not reached
@@ -267,7 +267,7 @@ Thread::Sleep ()
 
 static void ThreadFinish()    { currentThread->Finish(); }
 static void InterruptEnable() { interrupt->Enable(); }
-void ThreadPrint(int arg){ Thread *t = (Thread *)arg; t->Print();t->PrintId(); }
+void ThreadPrint(int arg){ Thread *t = (Thread *)arg; t->PrintId(); }
 
 //----------------------------------------------------------------------
 // Thread::StackAllocate

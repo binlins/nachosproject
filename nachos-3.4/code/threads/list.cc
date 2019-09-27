@@ -282,7 +282,7 @@ List::IsInList(void *item)
 	ListElement *ptr;
 	for (ptr = first; ptr != NULL; ptr = ptr->next) 
     	if (item == ptr->item) {
-			printf("find ptr in List\n");	
+			//printf("find ptr in List\n");	
 			return true;			
 		}
 			

@@ -52,8 +52,9 @@ ThreadTest1()
 	Thread *t3 = new Thread("forked thread3");
 
 	t3->Fork(SimpleThread, (void*)3);//为1，下为0
+	printf("print thread now\n");
 	t3->PrintId();
-	
+	allScheduler->Print();
 	//Thread *t4 = new Thread("forked thread4");
 	//Thread *t5 = new Thread("forked thread5");
 
@@ -61,13 +62,13 @@ ThreadTest1()
 	t1->PrintId();
 	t2->Fork(SimpleThread, (void*)2);//为1，下为0
 	t2->PrintId();
-	
+	//t2->Sleep();
 	//t4->Fork(SimpleThread, (void*)4);//为1，下为0
 	//t4->PrintId();
 	//t5->Fork(SimpleThread, (void*)5);//为1，下为0
 	//t5->PrintId();
     //SimpleThread(0);
-	scheduler->Print();
+	allScheduler->Print();
 
 }
 

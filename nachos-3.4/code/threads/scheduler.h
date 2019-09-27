@@ -16,6 +16,18 @@
 // The following class defines the scheduler/dispatcher abstraction -- 
 // the data structures and operations needed to keep track of which 
 // thread is running, and which threads are ready but not running.
+class AllScheduler {
+  public:
+    AllScheduler();			// Initialize list of ready threads 
+    ~AllScheduler();			// De-allocate ready list
+
+    void StartInAllList(Thread* thread);//linbin add
+	void FinishInAllList(Thread* thread);//linbin add
+    void Print();			// Print contents of ready list
+    
+  private:
+	List *allList;//linbin add
+};
 
 class Scheduler {
   public:
@@ -23,7 +35,7 @@ class Scheduler {
     ~Scheduler();			// De-allocate ready list
 
     void ReadyToRun(Thread* thread);	// Thread can be dispatched.
-	void FinishInAllList(Thread* thread);//linbin add
+	//void FinishInAllList(Thread* thread);//linbin add
     Thread* FindNextToRun();		// Dequeue first thread on the ready 
 					// list, if any, and return thread.
     void Run(Thread* nextThread);	// Cause nextThread to start running
@@ -32,7 +44,7 @@ class Scheduler {
   private:
     List *readyList;  		// queue of threads that are ready to run,
 				// but not running
-	List *allList;//linbin add
+	//List *allList;//linbin add
 };
 
 #endif // SCHEDULER_H
