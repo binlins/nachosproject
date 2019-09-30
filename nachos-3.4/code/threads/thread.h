@@ -101,9 +101,13 @@ class Thread {
 						// overflowed its stack
     void setStatus(ThreadStatus st) { status = st; }
     char* getName() { return (name); }
-	int getprogressid();//linbin add
+	int getProgressid();//linbin add
+	void setNice(int niceVal);//linbin add
+	int getNice();//linbin add
     void Print() { printf("name: %8s, ", name); }
-	void PrintId() { printf("%8s,", name);printf("%8d,", userid);printf("%8d,", progressid);printf("%16d\n", status);}//linbin add
+	void PrintId() { printf("%16s,", name);printf("%8d,", userid);printf("%8d,", progressid);printf("%16d,", status);
+					printf("%8d\n", nice);					
+}//linbin add
   private:
     // some of the private data for this class is listed above
     
@@ -116,6 +120,7 @@ class Thread {
 	//linbin add
 	int userid;
 	int progressid;
+	int nice;//越大的nice值意味着更低的优先级。 (-19 ~ 20之间)
 
     void StackAllocate(VoidFunctionPtr func, void *arg);
     					// Allocate a stack for thread.

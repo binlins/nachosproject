@@ -22,11 +22,9 @@
 #include "scheduler.h"
 #include "system.h"
 
-//----------------------------------------------------------------------
-// Scheduler::Scheduler
-// 	Initialize the list of ready but not running threads to empty.
-//----------------------------------------------------------------------
 
+
+//allScheduler 是所有队列，而scheduler只是就绪队列
 AllScheduler::AllScheduler()
 {
 	allList = new List;
@@ -48,16 +46,19 @@ AllScheduler::StartInAllList (Thread *thread)
 void
 AllScheduler::Print()
 {
+	printf("--------------------------------------------------\n");
 	printf("new All list contents:\n");
 	printf("name                uid         pid        status\n");
     allList->Mapcar((VoidFunctionPtr) ThreadPrint);
 	printf("--------------------------------------------------\n");
 	
 }
-//以上是我的复刻------------------------------------------
+
 //----------------------------------------------------------------------
+// Scheduler::Scheduler
+// 	Initialize the list of ready but not running threads to empty.
 //----------------------------------------------------------------------
-//----------------------------------------------------------------------
+
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
@@ -75,6 +76,14 @@ Scheduler::~Scheduler()
 { 
     delete readyList; 
 } 
+//
+void ThreadPrintName(int arg){ Thread *t = (Thread *)arg; printf("%16s",t->getName()); }
+void
+Scheduler::travelReadylist()
+{
+	printf("\nreadylist is:\n");
+    readyList->Mapcar((VoidFunctionPtr) ThreadPrintName);printf("\n");
+}
 
 //----------------------------------------------------------------------
 // Scheduler::ReadyToRun
@@ -88,9 +97,9 @@ void
 Scheduler::ReadyToRun (Thread *thread)
 {
     DEBUG('t', "Putting thread %s on ready list.\n", thread->getName());
-
+	
     thread->setStatus(READY);
-    readyList->Append((void *)thread);
+    readyList->SortedInsert((void *)thread, thread->getNice());
 }
 
 //----------------------------------------------------------------------
@@ -104,7 +113,7 @@ Scheduler::ReadyToRun (Thread *thread)
 Thread *
 Scheduler::FindNextToRun ()
 {
-    return (Thread *)readyList->Remove();
+    return (Thread *)readyList->SortedRemove(&lastNice);
 }
 
 //----------------------------------------------------------------------

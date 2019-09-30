@@ -14,11 +14,12 @@
 Thread *currentThread;			// the thread we are running now
 Thread *threadToBeDestroyed;  		// the thread that just finished
 Scheduler *scheduler;			// the ready list
-AllScheduler *allScheduler;    //linbin add
+AllScheduler *allScheduler;     //linbin add
 Interrupt *interrupt;			// interrupt status
 Statistics *stats;			// performance metrics
 Timer *timer;				// the hardware timer device,
 					// for invoking context switches
+
 
 #ifdef FILESYS_NEEDED
 FileSystem  *fileSystem;
@@ -192,6 +193,7 @@ Cleanup()
     
     delete timer;
     delete scheduler;
+	delete allScheduler;
     delete interrupt;
     
     Exit(0);

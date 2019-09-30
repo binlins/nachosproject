@@ -60,13 +60,23 @@ Thread::Thread(char* threadName)
 #ifdef USER_PROGRAM
     space = NULL;
 #endif
-	allScheduler->StartInAllList(this);
+	allScheduler->StartInAllList(this);//linbin add
+	nice = 20;//越大的nice值意味着更低的优先级。 (-19 ~ 20之间)
 }
 
 //
-
+void
+Thread::setNice(int niceVal)
+{
+	nice = niceVal;
+}
 int
-Thread::getprogressid()
+Thread::getNice()
+{
+	return nice;
+}
+int
+Thread::getProgressid()
 {
 	return progressid;
 }
@@ -178,7 +188,7 @@ Thread::Finish ()
     ASSERT(this == currentThread);
     
     DEBUG('t', "Finishing thread \"%s\"\n", getName());
-    //scheduler->FinishInAllList(this);
+    allScheduler->FinishInAllList(this);
     threadToBeDestroyed = currentThread;
     Sleep();					// invokes SWITCH
     // not reached
@@ -200,6 +210,10 @@ Thread::Finish ()
 //	original state, in case we are called with interrupts disabled. 
 //
 // 	Similar to Thread::Sleep(), but a little different.
+// 放弃cpu
+//注意：我们禁用中断，以便查看线程
+//ready列表的前面，可以切换到它原子的。返回时，我们将中断级别重新设置为
+//原始状态，以防在禁用中断的情况下调用我们。
 //----------------------------------------------------------------------
 
 void

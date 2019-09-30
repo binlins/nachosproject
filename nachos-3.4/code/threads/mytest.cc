@@ -7,8 +7,8 @@ void mytest1()
 {
 	int which = 1;
 	printf("*** mytest %d times\n", which);
-printf("*** mytest %d times\n", which);
-printf("---------------------------------\n");
+	printf("*** mytest %d times\n", which);
+	printf("---------------------------------\n");
 
 
 }

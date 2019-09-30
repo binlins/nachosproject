@@ -217,6 +217,7 @@ List::SortedInsert(void *item, int sortKey)
 //
 //	"keyPtr" is a pointer to the location in which to store the 
 //		priority of the removed item.
+//interrupt的用法是int when; 然后(PendingInterrupt *)pending->SortedRemove(&when);
 //----------------------------------------------------------------------
 
 void *
@@ -241,8 +242,10 @@ List::SortedRemove(int *keyPtr)
     numInList--;
     return thing;
 }
-
-
+//删除指定元素
+//void* 的意思是这是一个指针，你可以在函数中将这个指针转换为任何一个数据结构的指针。
+//可以说void*功能是相当强大的。
+//例如，在你设计模块间接口时，暂时无法判定传参类型。就可以通过void*传入，在函数中将指针转化你需要的类型就可以了。
 
 void
 List::Remove(void *item)
@@ -270,19 +273,20 @@ List::Remove(void *item)
 		break;
 	    }
         }
-	printf("num:%d\n", numInList);
+	//printf("num:%d\n", numInList);
 	if (ptr == NULL)	printf("notfindptr\n\n");
 	//ASSERT(ptr != NULL);	// should always find item!
     }
    //ASSERT(!IsInList(item));
 }
+List::IsInList(void *ite
 bool
 List::IsInList(void *item)
 {
 	ListElement *ptr;
 	for (ptr = first; ptr != NULL; ptr = ptr->next) 
     	if (item == ptr->item) {
-			printf("find ptr in List\n");	
+			//printf("find ptr in List\n");	
 			return true;			
 		}
 			

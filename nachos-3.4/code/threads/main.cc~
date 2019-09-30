@@ -58,7 +58,7 @@
 
 #ifdef THREADS
 extern int testnum;
-
+extern int lastNice;
 #endif
 extern int progressnum[128];//linbin add
 // External functions used by this file
@@ -107,7 +107,7 @@ main(int argc, char **argv)
         break;
       }
     }
-	testnum = 2;
+	
     ThreadTest();
 	mytest1();
 #endif

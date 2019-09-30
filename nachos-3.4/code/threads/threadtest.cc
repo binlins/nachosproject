@@ -15,7 +15,7 @@
 
 // testnum is set in main.cc
 int testnum = 1;
-
+int lastNice = 20;
 //----------------------------------------------------------------------
 // SimpleThread
 // 	Loop 5 times, yielding the CPU to another ready thread 
@@ -30,8 +30,10 @@ SimpleThread(int which)
 {
     int num;
     
-    for (num = 0; num < 5; num++) {
+    for (num = 0; num < 3; num++) {
 		printf("*** thread %d looped %d times\n", which, num);
+		//allScheduler->Print();
+		scheduler->travelReadylist();
         currentThread->Yield();
     }
 }
@@ -40,6 +42,7 @@ SimpleThread(int which)
 // ThreadTest1
 // 	Set up a ping-pong between two threads, by forking a thread 
 //	to call SimpleThread, and then calling SimpleThread ourselves.
+//  status: ThreadStatus { JUST_CREATED, RUNNING, READY, BLOCKED };
 //----------------------------------------------------------------------
 
 void
@@ -50,18 +53,26 @@ ThreadTest1()
     Thread *t1 = new Thread("forked thread1");
     Thread *t2 = new Thread("forked thread2");
 	Thread *t3 = new Thread("forked thread3");
-
+	
+	t3->setNice(-19);
 	t3->Fork(SimpleThread, (void*)3);//为1，下为0
-	printf("print thread now\n");
-	t3->PrintId();
+	
+	printf("print ready list now\n");
+	//t3->PrintId();
+	
 	allScheduler->Print();
+	scheduler->travelReadylist();
 	//Thread *t4 = new Thread("forked thread4");
 	//Thread *t5 = new Thread("forked thread5");
-
+	
 	t1->Fork(SimpleThread, (void*)1);//为1，下为0
-	t1->PrintId();
+	//t1->PrintId();
+	allScheduler->Print();
+	scheduler->travelReadylist();
+	t2->setNice(15);
 	t2->Fork(SimpleThread, (void*)2);//为1，下为0
-	t2->PrintId();
+	
+	//t2->PrintId();
 	//t2->Sleep();
 	//t4->Fork(SimpleThread, (void*)4);//为1，下为0
 	//t4->PrintId();
@@ -69,7 +80,7 @@ ThreadTest1()
 	//t5->PrintId();
     //SimpleThread(0);
 	allScheduler->Print();
-
+	scheduler->travelReadylist();
 }
 
 //----------------------------------------------------------------------
