@@ -24,7 +24,7 @@
 
 
 
-//allScheduler
+//allScheduler 是所有队列，而scheduler只是就绪队列
 AllScheduler::AllScheduler()
 {
 	allList = new List;
@@ -65,8 +65,8 @@ AllScheduler::Print()
 Scheduler::Scheduler()
 { 
     readyList = new List; 
+	int lastSwitchTicks = stats->totalTicks;
 } 
-
 //----------------------------------------------------------------------
 // Scheduler::~Scheduler
 // 	De-allocate the list of ready threads.
@@ -77,14 +77,19 @@ Scheduler::~Scheduler()
     delete readyList; 
 } 
 //
-void ThreadPrintName(int arg){ Thread *t = (Thread *)arg; printf("%16s",t->getName()); }
+void ThreadPrintName(int arg){ Thread *t = (Thread *)arg; printf("%16s %4d",t->getName(), t->priority); }
 void
-Scheduler::travelReadylist()
+Scheduler::TravelReadylist()
 {
 	printf("\nreadylist is:\n");
     readyList->Mapcar((VoidFunctionPtr) ThreadPrintName);printf("\n");
 }
-
+void ThreadAddPriority(int arg){ Thread *t = (Thread *)arg; t->priority -= Pace;}
+void 
+Scheduler::FlushPriority()
+{
+	readyList->Mapcar((VoidFunctionPtr) ThreadAddPriority);
+}
 //----------------------------------------------------------------------
 // Scheduler::ReadyToRun
 // 	Mark a thread as ready, but not running.
@@ -99,7 +104,7 @@ Scheduler::ReadyToRun (Thread *thread)
     DEBUG('t', "Putting thread %s on ready list.\n", thread->getName());
 	
     thread->setStatus(READY);
-    readyList->SortedInsert((void *)thread, thread->getNice());
+    readyList->SortedInsert((void *)thread, thread->priority);
 }
 
 //----------------------------------------------------------------------
@@ -109,11 +114,36 @@ Scheduler::ReadyToRun (Thread *thread)
 // Side effect:
 //	Thread is removed from the ready list.
 //----------------------------------------------------------------------
-
+/*1.	计算当前进程的优先级
+2.	计算最近调度与现在的间隔
+3.	间隔太小，返回NULL					（避免过分频繁地调度）
+4.	就绪队列为空，返回NULL				（没有就绪线程可以调度）
+5.	找到优先级最高的就绪态线程
+5.1.	如果优先级高于当前运行线程，
+5.1.1.	运行该线程
+5.1.2.	设置最近调度事件
+5.2.	将该线程插回就绪队列，返回NULL	（继续运行当前线程）
+*/
 Thread *
 Scheduler::FindNextToRun ()
 {
-    return (Thread *)readyList->SortedRemove(&lastNice);
+	//return (Thread *)readyList->Remove();
+	if (threadToBeDestroyed == currentThread) printf("currentThread is null now\n");
+	int oldPri = currentThread->priority;
+	printf("%d    %d    %d\n", oldPri, stats->totalTicks, lastSwitchTicks); 
+	if (stats->totalTicks - lastSwitchTicks < MinPace) {
+	printf("MinPace too samll: %d < %d\n", stats->totalTicks - lastSwitchTicks,MinPace);return NULL;
+	}
+	if (readyList->IsEmpty()) return NULL;
+	int newPri;
+	Thread *t = (Thread *)readyList->SortedRemove(&newPri);
+	if (oldPri < newPri) {
+		currentThread->priority += (stats->totalTicks - lastSwitchTicks)/5;
+		readyList->SortedInsert((void *)t, t->priority);
+	} else  {
+		lastSwitchTicks = stats->totalTicks;return t;
+	}
+    return NULL;
 }
 
 //----------------------------------------------------------------------
@@ -134,7 +164,9 @@ void
 Scheduler::Run (Thread *nextThread)
 {
     Thread *oldThread = currentThread;
-    
+    oldThread->priority += (stats->totalTicks - lastSwitchTicks)/5;
+
+
 #ifdef USER_PROGRAM			// ignore until running user programs 
     if (currentThread->space != NULL) {	// if this thread is a user program,
         currentThread->SaveUserState(); // save the user's CPU registers

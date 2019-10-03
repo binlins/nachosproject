@@ -13,6 +13,13 @@
 #include "list.h"
 #include "thread.h"
 #include "allScheduler.h"
+#define		TimerTicks			50		//	时间片大小
+#define		CreatePriority		20			//	线程创建时的优先级
+#define		BlockedPriority		15			//	睡眠唤醒线程的优先级
+#define		Pace			2			//	优先级调整幅度
+#define		MinPace		(TimerTicks/5)	//	两次抢占调度的最小时间间隔
+
+
 // The following class defines the scheduler/dispatcher abstraction -- 
 // the data structures and operations needed to keep track of which 
 // thread is running, and which threads are ready but not running.
@@ -40,12 +47,11 @@ class Scheduler {
 					// list, if any, and return thread.
     void Run(Thread* nextThread);	// Cause nextThread to start running
     void Print();			// Print contents of ready list
-	void travelReadylist(); // Print name of ready list
-    
+	void TravelReadylist(); // Print name of ready list
+    void FlushPriority();
+	int	lastSwitchTicks;
   private:
-    List *readyList;  		// queue of threads that are ready to run,
-				// but not running
-	//List *allList;//linbin add
+    List *readyList;  		// queue of threads that are ready to ,but not 	
 };
 
 #endif // SCHEDULER_H

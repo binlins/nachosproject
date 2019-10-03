@@ -61,24 +61,7 @@ Thread::Thread(char* threadName)
     space = NULL;
 #endif
 	allScheduler->StartInAllList(this);//linbin add
-	nice = 20;//越大的nice值意味着更低的优先级。 (-19 ~ 20之间)
-}
-
-//
-void
-Thread::setNice(int niceVal)
-{
-	nice = niceVal;
-}
-int
-Thread::getNice()
-{
-	return nice;
-}
-int
-Thread::getProgressid()
-{
-	return progressid;
+	priority = CreatePriority;//越大的nice值意味着更低的优先级。 (-19 ~ 20之间)
 }
 
 
@@ -221,7 +204,7 @@ Thread::Yield ()
 {
     Thread *nextThread;
     IntStatus oldLevel = interrupt->SetLevel(IntOff);
-    
+	
     ASSERT(this == currentThread);
     
     DEBUG('t', "Yielding thread \"%s\"\n", getName());
